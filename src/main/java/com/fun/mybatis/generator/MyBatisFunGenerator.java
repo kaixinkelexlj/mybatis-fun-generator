@@ -72,7 +72,7 @@ public class MyBatisFunGenerator {
 
     SqlMapGeneratorConfiguration sqlMapGeneratorConfiguration = new SqlMapGeneratorConfiguration();
     sqlMapGeneratorConfiguration.setTargetProject(generatorProperties.getTargetProjectOrDefault());
-    sqlMapGeneratorConfiguration.setTargetPackage(generatorProperties.getTargetProjectOrDefault());
+    sqlMapGeneratorConfiguration.setTargetPackage(generatorProperties.getMapperPackageOrDefault());
     context.setSqlMapGeneratorConfiguration(sqlMapGeneratorConfiguration);
 
     Stream.of(tableList).forEach(table -> buildTableConfiguration(context, table));
@@ -101,7 +101,7 @@ public class MyBatisFunGenerator {
     tableConfiguration.setDeleteByExampleStatementEnabled(true);
     tableConfiguration.setDeleteByPrimaryKeyStatementEnabled(true);
     tableConfiguration.setDomainObjectName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL,
-        tableName + "DO"));
+        tableName) + "DO");
     tableConfiguration.setMapperName("mapper_" + tableName);
     return tableConfiguration;
   }
@@ -155,7 +155,7 @@ public class MyBatisFunGenerator {
     public static final String LIST_QUERY_ID = "list";
     public static final String DEFAULT_MODEL_PACKAGE = "domain";
     public static final String DEFAULT_MAPPER_PACKAGE = "mapper";
-    public static final String DEFAULT_TRAGET_PROJECT = "target";
+    public static final String DEFAULT_TRAGET_PROJECT = "output";
     public static final String DEFAULT_JAVA_CLIENT_PACKAGE = "client";
 
     private String modelPackage;
