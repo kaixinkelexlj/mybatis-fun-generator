@@ -9,26 +9,12 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
  */
 public class FunTableContext {
 
-  public static interface GlobalConfigration {
-
-    String QUERY_TYPE_PATTERN = "query.%sQuery";
-    String DAO_TYPE_PATTERN = "dao.%sDAO";
-  }
-
-  private String tableName;
+  private String dbTableName;
+  private String javaTableName;
   private Interface dao;
-  private TopLevelClass daoTest;
   private TopLevelClass domain;
   private TopLevelClass query;
   private TopLevelClass converter;
-
-  public String getTableName() {
-    return tableName;
-  }
-
-  public void setTableName(String tableName) {
-    this.tableName = tableName;
-  }
 
   public Interface getDao() {
     return dao;
@@ -36,14 +22,6 @@ public class FunTableContext {
 
   public void setDao(Interface dao) {
     this.dao = dao;
-  }
-
-  public TopLevelClass getDaoTest() {
-    return daoTest;
-  }
-
-  public void setDaoTest(TopLevelClass daoTest) {
-    this.daoTest = daoTest;
   }
 
   public TopLevelClass getDomain() {
@@ -68,5 +46,21 @@ public class FunTableContext {
 
   public void setConverter(TopLevelClass converter) {
     this.converter = converter;
+  }
+
+  public String getDbTableName() {
+    return dbTableName;
+  }
+
+  public void setDbTableName(String dbTableName) {
+    this.dbTableName = dbTableName;
+  }
+
+  public String getJavaTableName() {
+    return javaTableName;
+  }
+
+  public void setJavaTableName(String javaTableName) {
+    this.javaTableName = javaTableName;
   }
 }
