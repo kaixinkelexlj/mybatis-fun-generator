@@ -33,14 +33,14 @@ public class FunXmlGenerator extends SimpleXMLMapperGenerator {
     context.getCommentGenerator().addRootComment(answer);
 
     addAllColumns(answer);
-    addListQuery(answer);
-
     addResultMapElement(answer);
-    addDeleteByPrimaryKeyElement(answer);
-    addInsertElement(answer);
-    addUpdateByPrimaryKeyElement(answer);
+
+    addListQuery(answer);
     addSelectByPrimaryKeyElement(answer);
     addSelectAllElement(answer);
+    addInsertElement(answer);
+    addUpdateByPrimaryKeyElement(answer);
+    addDeleteByPrimaryKeyElement(answer);
 
     return answer;
   }

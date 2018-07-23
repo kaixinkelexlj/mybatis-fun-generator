@@ -1,21 +1,26 @@
 package com.fun.mybatis.generator.mgb.client;
 
 import com.fun.mybatis.generator.FunTableContext;
+import com.fun.mybatis.generator.MyBatisFunGenerator.GeneratorProperties;
 import com.fun.mybatis.generator.mgb.FunIntrospectedTableImpl;
 import com.google.common.collect.Lists;
 import java.util.List;
 import org.mybatis.generator.api.dom.java.CompilationUnit;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.codegen.AbstractJavaClientGenerator;
 import org.mybatis.generator.codegen.AbstractXmlGenerator;
+import org.mybatis.generator.codegen.mybatis3.javamapper.SimpleJavaClientGenerator;
 
 /**
  * @author xulujun
  * @date 2018/07/20
  */
-public class FunJavaClientGenerator extends AbstractJavaClientGenerator {
+public class FunJavaClientGenerator extends SimpleJavaClientGenerator {
 
   public FunJavaClientGenerator() {
     super(false);
@@ -42,6 +47,16 @@ public class FunJavaClientGenerator extends AbstractJavaClientGenerator {
     Interface dao = new Interface("dao." + getIntrospectedTable().getFunTableContext()
         .getJavaTableName() + "DAO");
     dao.setVisibility(JavaVisibility.PUBLIC);
+
+    //add list method
+    addListMethod(dao);
+
+    addDeleteByPrimaryKeyMethod(dao);
+    addInsertMethod(dao);
+    addSelectByPrimaryKeyMethod(dao);
+    addSelectAllMethod(dao);
+    addUpdateByPrimaryKeyMethod(dao);
+
     context.getCommentGenerator().addJavaFileComment(dao);
     return dao;
   }
@@ -56,6 +71,21 @@ public class FunJavaClientGenerator extends AbstractJavaClientGenerator {
     converter.setVisibility(JavaVisibility.PUBLIC);
     context.getCommentGenerator().addJavaFileComment(converter);
     return converter;
+  }
+
+  private void addListMethod(Interface dao){
+    Method method = new Method(GeneratorProperties.LIST_QUERY_ID);
+
+    FullyQualifiedJavaType domainType = new FullyQualifiedJavaType(introspectedTable
+        .getBaseRecordType());
+    FullyQualifiedJavaType returnType = FullyQualifiedJavaType.getNewListInstance();
+    returnType.addTypeArgument(domainType);
+    method.setReturnType(returnType);
+
+    method.addParameter(new Parameter(getIntrospectedTable().getFunTableContext().getQuery()
+        .getType(), "query"));
+
+    dao.addMethod(method);
   }
 
   @Override

@@ -88,7 +88,7 @@ public class MyBatisFunGenerator {
     Configuration configuration = new Configuration();
     configuration.addContext(context);
 
-    ShellCallback shellCallback = new DefaultShellCallback(false);
+    ShellCallback shellCallback = new DefaultShellCallback(true);
     new MyBatisGenerator(configuration, shellCallback, null).generate(null);
   }
 
