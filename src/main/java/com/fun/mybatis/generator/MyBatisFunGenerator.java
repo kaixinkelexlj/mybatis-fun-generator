@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 import org.mybatis.generator.api.MyBatisGenerator;
+import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.config.CommentGeneratorConfiguration;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.Context;
@@ -17,6 +18,7 @@ import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
 import org.mybatis.generator.config.JavaTypeResolverConfiguration;
 import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
 import org.mybatis.generator.config.TableConfiguration;
+import org.mybatis.generator.internal.DefaultShellCallback;
 
 /**
  * @author xulujun
@@ -86,7 +88,8 @@ public class MyBatisFunGenerator {
     Configuration configuration = new Configuration();
     configuration.addContext(context);
 
-    new MyBatisGenerator(configuration, null, null).generate(null);
+    ShellCallback shellCallback = new DefaultShellCallback(false);
+    new MyBatisGenerator(configuration, shellCallback, null).generate(null);
   }
 
 

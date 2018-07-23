@@ -1,6 +1,7 @@
 package com.fun.mybatis.generator.mgb.comment;
 
 import java.util.Properties;
+import org.apache.commons.lang.StringUtils;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -27,7 +28,15 @@ public class FunCommentGenerator implements CommentGenerator {
   @Override
   public void addFieldComment(Field field, IntrospectedTable introspectedTable,
       IntrospectedColumn introspectedColumn) {
-
+    String remarks = introspectedColumn.getRemarks();
+    field.addJavaDocLine("/**");
+    if (StringUtils.isNotBlank(remarks)) {
+      field.addJavaDocLine(" * " + remarks);
+    }
+    field.addJavaDocLine(
+        " * from " + introspectedTable.getFullyQualifiedTable() + "." + introspectedColumn
+            .getActualColumnName());
+    field.addJavaDocLine(" */");
   }
 
   @Override

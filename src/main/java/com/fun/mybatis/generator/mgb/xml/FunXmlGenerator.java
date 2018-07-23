@@ -1,39 +1,51 @@
 package com.fun.mybatis.generator.mgb.xml;
 
+import static org.mybatis.generator.internal.util.messages.Messages.getString;
+
 import com.fun.mybatis.generator.MyBatisFunGenerator.GeneratorProperties;
 import com.fun.mybatis.generator.mgb.FunIntrospectedTableImpl;
 import com.google.common.base.CaseFormat;
 import java.util.stream.Collectors;
+import org.mybatis.generator.api.FullyQualifiedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.xml.Attribute;
-import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
-import org.mybatis.generator.codegen.AbstractXmlGenerator;
-import org.mybatis.generator.codegen.XmlConstants;
+import org.mybatis.generator.codegen.mybatis3.xmlmapper.SimpleXMLMapperGenerator;
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.elements.AbstractXmlElementGenerator;
 
 /**
  * @author xulujun
  * @date 2018/07/20
  */
-public class FunXmlGenerator extends AbstractXmlGenerator {
+public class FunXmlGenerator extends SimpleXMLMapperGenerator {
 
 
   @Override
-  public Document getDocument() {
-    Document document = new Document(XmlConstants.MYBATIS3_MAPPER_PUBLIC_ID, XmlConstants
-        .MYBATIS3_MAPPER_SYSTEM_ID);
-    if (!context.getPlugins().sqlMapDocumentGenerated(document, introspectedTable)) {
-      document = null;
-      return document;
-    }
-    document.setRootElement(getRootElement());
-    return document;
+  protected XmlElement getSqlMapElement() {
+    FullyQualifiedTable table = introspectedTable.getFullyQualifiedTable();
+    progressCallback.startTask(getString("Progress.12", table.toString())); //$NON-NLS-1$
+    XmlElement answer = new XmlElement("mapper"); //$NON-NLS-1$
+    String namespace = introspectedTable.getMyBatis3SqlMapNamespace();
+    answer.addAttribute(new Attribute("namespace", //$NON-NLS-1$
+        namespace));
 
+    context.getCommentGenerator().addRootComment(answer);
+
+    addAllColumns(answer);
+    addListQuery(answer);
+
+    addResultMapElement(answer);
+    addDeleteByPrimaryKeyElement(answer);
+    addInsertElement(answer);
+    addUpdateByPrimaryKeyElement(answer);
+    addSelectByPrimaryKeyElement(answer);
+    addSelectAllElement(answer);
+
+    return answer;
   }
 
-  private XmlElement getRootElement() {
+  /*private XmlElement getRootElement() {
     //FullyQualifiedTable fullyQualifiedTable = introspectedTable.getFullyQualifiedTable();
     FunIntrospectedTableImpl funIntrospectedTable = (FunIntrospectedTableImpl) introspectedTable;
     XmlElement rootElement = new XmlElement("mapper");
@@ -44,7 +56,7 @@ public class FunXmlGenerator extends AbstractXmlGenerator {
     addAllColumns(rootElement);
     addListQuery(rootElement);
     return rootElement;
-  }
+  }*/
 
   private void addAllColumns(XmlElement parent) {
     AllColumnsGenerator allColumnsGenerator = new AllColumnsGenerator();
@@ -78,8 +90,8 @@ public class FunXmlGenerator extends AbstractXmlGenerator {
     private String getAllColumnsText() {
       return introspectedTable.getAllColumns()
           .stream().map(col -> col.getActualColumnName() + " AS " + CaseFormat.LOWER_UNDERSCORE
-              .to(CaseFormat.LOWER_UNDERSCORE, col.getActualColumnName()) + "\n")
-          .collect(Collectors.joining("\t,"));
+              .to(CaseFormat.LOWER_CAMEL, col.getActualColumnName()) + "\n")
+          .collect(Collectors.joining("\t\t,"));
     }
 
   }
@@ -103,9 +115,9 @@ public class FunXmlGenerator extends AbstractXmlGenerator {
       listAll.addElement(new TextElement("select"));
       listAll.addElement(this.getBaseColumnListElement());
       listAll.addElement(new TextElement(
-          "\tfrom " + introspectedTable.getFullyQualifiedTableNameAtRuntime()
+          "\t\tfrom " + introspectedTable.getFullyQualifiedTableNameAtRuntime()
               + "\n"
-              + "where 1 = 1"));
+              + "\t\twhere 1 = 1"));
       parentElement.addElement(listAll);
     }
 

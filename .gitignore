@@ -3,6 +3,8 @@
 
 .DS_Store
 
+output/
+
 ### STS ###
 .apt_generated
 .classpath
