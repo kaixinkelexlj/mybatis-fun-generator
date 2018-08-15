@@ -4,9 +4,11 @@ import com.fun.mybatis.generator.mgb.FunIntrospectedTableImpl;
 import com.fun.mybatis.generator.mgb.client.FunJavaClientGenerator;
 import com.fun.mybatis.generator.mgb.comment.FunCommentGenerator;
 import com.google.common.base.CaseFormat;
+import java.io.File;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
+import org.apache.commons.io.FileUtils;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.config.CommentGeneratorConfiguration;
@@ -39,6 +41,7 @@ public class MyBatisFunGenerator {
 
   public void generate(
       String... tableList) throws Exception {
+    org.apache.commons.io.FileUtils.cleanDirectory(new File(GeneratorProperties.DEFAULT_TRAGET_PROJECT));
     Context context = new Context(null);
     context.setId("context-" + contextCounter.incrementAndGet());
     context.setTargetRuntime(FunIntrospectedTableImpl.class.getName());

@@ -4,7 +4,9 @@ import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
 import com.fun.mybatis.generator.MyBatisFunGenerator.GeneratorProperties;
 import com.fun.mybatis.generator.mgb.FunIntrospectedTableImpl;
+import com.fun.template.TemplateLoader;
 import com.google.common.base.CaseFormat;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import java.util.stream.Collectors;
 import org.mybatis.generator.api.FullyQualifiedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
@@ -20,6 +22,9 @@ import org.mybatis.generator.codegen.mybatis3.xmlmapper.elements.AbstractXmlElem
  */
 public class FunXmlGenerator extends SimpleXMLMapperGenerator {
 
+  private static final String SQL_ID_SORT_AND_PAGER = "sort-and-pager";
+  private static final String SQL_ID_ALL_COLUMNS = "all-columns";
+
 
   @Override
   protected XmlElement getSqlMapElement() {
@@ -33,6 +38,7 @@ public class FunXmlGenerator extends SimpleXMLMapperGenerator {
     context.getCommentGenerator().addRootComment(answer);
 
     addAllColumns(answer);
+    addSortAndPager(answer);
     addResultMapElement(answer);
 
     addListQuery(answer);
@@ -43,6 +49,11 @@ public class FunXmlGenerator extends SimpleXMLMapperGenerator {
     addDeleteByPrimaryKeyElement(answer);
 
     return answer;
+  }
+
+  private void addSortAndPager(XmlElement answer) {
+    SortAndPagerGenerator sortAndPagerGenerator = new SortAndPagerGenerator();
+    sortAndPagerGenerator.addElements(answer);
   }
 
   /*private XmlElement getRootElement() {
@@ -81,10 +92,10 @@ public class FunXmlGenerator extends SimpleXMLMapperGenerator {
     @Override
     public void addElements(XmlElement parentElement) {
       XmlElement allColumns = new XmlElement("sql");
-      allColumns.addAttribute(new Attribute("id", "all-columns"));
+      allColumns.addAttribute(new Attribute("id", SQL_ID_ALL_COLUMNS));
       allColumns.addElement(new TextElement(getAllColumnsText()));
       parentElement.addElement(allColumns);
-      introspectedTable.setBaseColumnListId("all-columns");
+      introspectedTable.setBaseColumnListId(SQL_ID_ALL_COLUMNS);
     }
 
     private String getAllColumnsText() {
@@ -94,6 +105,17 @@ public class FunXmlGenerator extends SimpleXMLMapperGenerator {
           .collect(Collectors.joining("\t\t,"));
     }
 
+  }
+
+  private class SortAndPagerGenerator extends InnerAbstractXmlElementGenerator{
+
+    @Override
+    public void addElements(XmlElement parentElement) {
+      XmlElement element = new XmlElement("sql");
+      element.addAttribute(new Attribute("id", SQL_ID_SORT_AND_PAGER));
+      element.addElement(new TextElement(TemplateLoader.getInstance().vm2String(SQL_ID_SORT_AND_PAGER + ".vm")));
+      parentElement.addElement(element);
+    }
   }
 
   private class ListQueryGenerator extends InnerAbstractXmlElementGenerator {

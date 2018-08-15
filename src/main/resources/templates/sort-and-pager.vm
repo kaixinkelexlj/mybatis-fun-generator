@@ -1,0 +1,9 @@
+<if test="sortList != null and sortList.size != 0">
+        order by
+        <foreach collection="sortList" item="sort" separator=",">
+            ${sort.field} ${sort.order}
+        </foreach>
+    </if>
+    <if test="pager != null">
+        limit #{pager.start}, #{pager.pageSize}
+    </if>
